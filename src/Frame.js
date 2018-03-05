@@ -45,6 +45,7 @@ export class Frame {
 
    getFrameStyle() {
       return `border: 1px solid #FFFFFF;
+      z-index: 2;
       position: absolute;
       top: ${this.framePosition.top}px;
       right: ${this.framePosition.right}px;

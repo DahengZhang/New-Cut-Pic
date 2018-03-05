@@ -16,6 +16,22 @@ export class Main {
       this.init();
    }
 
+   createPreviewCanvas() {
+      this.pCanvas = Canvas.create(this.preview.getBoundingClientRect());
+      this.pCtx = this.pCanvas.getContext('2d');
+      this.preview.appendChild(this.pCanvas);
+   }
+
+   showImage(image) {
+      this.el.appendChild(image);
+      const [top, right, bottom, left] = this.calculation.calculation(image.getBoundingClientRect(), this.el.getBoundingClientRect());
+      if (top === 0) { }
+      image.style = `position: absolute;
+      z-index: 1;
+      top: ${top}px;
+      left: ${left}px;`
+   }
+
    windowEvent() {
       window.addEventListener('mousemove', e => {
          e.stopPropagation();
@@ -32,25 +48,10 @@ export class Main {
       console.log(cut)
    }
 
-   createPreviewCanvas() {
-      this.pCanvas = Canvas.create(this.preview.getBoundingClientRect());
-      this.pCtx = this.pCanvas.getContext('2d');
-      this.preview.appendChild(this.pCanvas);
-   }
-
    init() {
       this.createPreviewCanvas();
-      const oImage = Loader.onloaded('2.jpg');
-      const sImage = Loader.onloaded('2.jpg');
-      Promise.all([oImage, sImage]).then(response => {
-         this.oImage = response[0];
-         this.sImage = response[1];
-         this.sImage.draggable = false;
-         this.el.appendChild(this.sImage);
-         this.frameSize = this.calculation.calculation(this.sImage.getBoundingClientRect(), this.el.getBoundingClientRect());
-         this.frame.setMaxSize(...this.frameSize);
-         this.sImage.style = 'width: 100%; height: 100%; object-fit: scale-down; user-select: none;';
-         this.windowEvent();
+      Loader.onloaded('2.jpg').then(response => {
+         this.showImage(response);
       });
    }
 }
