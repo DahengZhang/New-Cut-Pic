@@ -44,13 +44,11 @@ export class Main {
         this.frame.setMaxSize(top, right, bottom, left);
         this.frameSize = [top, right, bottom, left];
         this.drawPreview(...this.frame.getPoint());
-        this.windowEvent();
     }
 
     windowEvent() {
         window.addEventListener('mousemove', e => {
             e.stopPropagation();
-            // console.log(e)
             if (this.frame.nowContact !== null) {
                 this.frame.changeSize(e);
                 this.drawPreview(...this.frame.getPoint());
@@ -74,6 +72,7 @@ export class Main {
 
     init() {
         this.createPreviewCanvas();
+        this.windowEvent();
         Loader.onloaded('0.jpg').then(response => {
             this.image = response;
             this.showImage(response);
