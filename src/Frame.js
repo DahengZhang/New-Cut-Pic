@@ -82,8 +82,8 @@ export class Frame {
    }
 
    getPositoin(e) {
-      const x = e.clientX + document.documentElement.scrollLeft - this.wrapperStyle.left;
-      const y = e.clientY + document.documentElement.scrollTop - this.wrapperStyle.top;
+      const x = e.clientX + document.documentElement.scrollLeft - this.wrapper.offsetLeft;
+      const y = e.clientY + document.documentElement.scrollTop - this.wrapper.offsetTop;
       return { x, y }
    }
 
