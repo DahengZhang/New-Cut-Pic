@@ -16,6 +16,13 @@ export class Frame {
       return Frame.instance;
    }
 
+   createFileInput() {
+      this.fileInput = document.createElement('input');
+      this.fileInput.setAttribute('type', 'file');
+      this.fileInput.setAttribute('style', `position: absolute; z-index: 1; top: 0; left: 0; width: 100%; height: 100%;`);
+      this.frame.appendChild(this.fileInput);
+   }
+
    setMaxSize(top = 0, right = 0, bottom = 0, left = 0) {
       this.maxSize = {
          top,
@@ -75,8 +82,8 @@ export class Frame {
    }
 
    getPositoin(e) {
-      const x = e.clientX - this.wrapperStyle.left;
-      const y = e.clientY - this.wrapperStyle.top;
+      const x = e.clientX + document.documentElement.scrollLeft - this.wrapperStyle.left;
+      const y = e.clientY + document.documentElement.scrollTop - this.wrapperStyle.top;
       return { x, y }
    }
 
@@ -89,22 +96,21 @@ export class Frame {
    }
 
    topMove(position) {
-      this.frame.style.top = position.y + 'px';
       this.framePosition.top = position.y;
+      this.frame.style.top = position.y + 'px';
       if (this.framePosition.top < this.maxSize.top) {
          this.framePosition.top = this.maxSize.top;
          this.frame.style.top = this.framePosition.top + 'px';
       }
       if (this.frame.getBoundingClientRect().height < this.minSize.height) {
-
          this.framePosition.top = this.wrapperStyle.height - this.framePosition.bottom - this.minSize.height;
          this.frame.style.top = this.framePosition.top + 'px';
       }
    }
 
    rightMove(position) {
-      this.frame.style.right = (this.wrapperStyle.width - position.x) + 'px';
       this.framePosition.right = this.wrapperStyle.width - position.x;
+      this.frame.style.right = this.framePosition.right + 'px';
       if (this.framePosition.right < this.maxSize.right) {
          this.framePosition.right = this.maxSize.right;
          this.frame.style.right = this.framePosition.right + 'px';
@@ -116,8 +122,8 @@ export class Frame {
    }
 
    bottomMove(position) {
-      this.frame.style.bottom = (this.wrapperStyle.height - position.y) + 'px';
       this.framePosition.bottom = this.wrapperStyle.height - position.y;
+      this.frame.style.bottom = this.framePosition.bottom + 'px';
       if (this.framePosition.bottom < this.maxSize.bottom) {
          this.framePosition.bottom = this.maxSize.bottom;
          this.frame.style.bottom = this.framePosition.bottom + 'px';
@@ -129,8 +135,8 @@ export class Frame {
    }
 
    leftMove(position) {
-      this.frame.style.left = position.x + 'px';
       this.framePosition.left = position.x;
+      this.frame.style.left = position.x + 'px';
       if (this.framePosition.left < this.maxSize.left) {
          this.framePosition.left = this.maxSize.left;
          this.frame.style.left = this.framePosition.left + 'px';
@@ -150,31 +156,28 @@ export class Frame {
       this.frame.style.right = this.framePosition.right + 'px';
       this.framePosition.left = position.x - this.paddingLeft;
       this.frame.style.left = this.framePosition.left + 'px';
-
-      const oldH = this.frame.getBoundingClientRect().height;
-      const oldW = this.frame.getBoundingClientRect().width;
       if (this.framePosition.top < this.maxSize.top) {
          this.framePosition.top = this.maxSize.top;
          this.frame.style.top = this.maxSize.top + 'px';
-         this.framePosition.bottom = this.wrapperStyle.height - oldH - this.maxSize.top;
+         this.framePosition.bottom = this.wrapperStyle.height - this.oldFrameHeight - this.maxSize.top;
          this.frame.style.bottom = this.framePosition.bottom + 'px';
       }
       if (this.framePosition.bottom < this.maxSize.bottom) {
          this.framePosition.bottom = this.maxSize.bottom;
          this.frame.style.bottom = this.maxSize.bottom + 'px';
-         this.framePosition.top = this.wrapperStyle.height - oldH - this.maxSize.bottom;
+         this.framePosition.top = this.wrapperStyle.height - this.oldFrameHeight - this.maxSize.bottom;
          this.frame.style.top = this.framePosition.top + 'px';
       }
       if (this.framePosition.right < this.maxSize.right) {
          this.framePosition.right = this.maxSize.right;
          this.frame.style.right = this.maxSize.right + 'px';
-         this.framePosition.left = this.wrapperStyle.width - oldW - this.maxSize.right;
+         this.framePosition.left = this.wrapperStyle.width - this.oldFrameWidth - this.maxSize.right;
          this.frame.style.left = this.framePosition.left + 'px';
       }
       if (this.framePosition.left < this.maxSize.left) {
          this.framePosition.left = this.maxSize.left;
          this.frame.style.left = this.maxSize.left + 'px';
-         this.framePosition.right = this.wrapperStyle.width - oldW - this.maxSize.left;
+         this.framePosition.right = this.wrapperStyle.width - this.oldFrameWidth - this.maxSize.left;
          this.frame.style.right = this.framePosition.right + 'px';
       }
    }
@@ -194,10 +197,13 @@ export class Frame {
       this.setMinSize();
       this.frame = document.createElement('div');
       this.setMaxSize();
+      // this.createFileInput();
       this.frame.style = this.getFrameStyle();
       this.frame.addEventListener('mousedown', e => {
          e.stopPropagation();
          const point = this.getPositoin(e);
+         this.oldFrameHeight = this.frame.getBoundingClientRect().height;
+         this.oldFrameWidth = this.frame.getBoundingClientRect().width;
          this.paddingTop = point.y - this.framePosition.top;
          this.paddingLeft = point.x - this.framePosition.left;
          this.nowContact = 'move';

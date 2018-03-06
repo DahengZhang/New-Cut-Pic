@@ -50,6 +50,7 @@ export class Main {
     windowEvent() {
         window.addEventListener('mousemove', e => {
             e.stopPropagation();
+            // console.log(e)
             if (this.frame.nowContact !== null) {
                 this.frame.changeSize(e);
                 this.drawPreview(...this.frame.getPoint());
@@ -67,7 +68,7 @@ export class Main {
         const srcW = this.image.getBoundingClientRect().width * this.scale - srcX - right + this.frameSize[1] * this.scale;
         const srcH = this.image.getBoundingClientRect().height * this.scale - srcY - bottom + this.frameSize[2] * this.scale;
         const d = this.cut.cut({ width: srcW, height: srcH }, this.preview.getBoundingClientRect());
-        this.pCtx.clearRect(0, 0, this.el.getBoundingClientRect().width, this.el.getBoundingClientRect().height);
+        this.pCtx.clearRect(0, 0, this.preview.getBoundingClientRect().width, this.preview.getBoundingClientRect().height);
         Draw.drawImage(this.image, this.pCtx, srcX, srcY, srcW, srcH, ...d);
     }
 
