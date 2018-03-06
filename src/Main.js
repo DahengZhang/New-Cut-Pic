@@ -30,12 +30,11 @@ export class Main {
         if (top === 0) {
             imageWidth = this.el.getBoundingClientRect().width - right - left;
             imageHeight = this.el.getBoundingClientRect().height;
-            this.scale = image.getBoundingClientRect().width / imageWidth;
         } else {
             imageWidth = this.el.getBoundingClientRect().width;
             imageHeight = this.el.getBoundingClientRect().height - top - bottom;
-            this.scale = image.getBoundingClientRect().height / imageHeight;
         }
+        this.scale = image.getBoundingClientRect().width / imageWidth;
         image.style = `position: absolute;
         z-index: 1;
         top: ${top}px;
@@ -63,8 +62,8 @@ export class Main {
         right = right * this.scale;
         bottom = bottom * this.scale;
         left = left * this.scale;
-        const srcX = left - this.frameSize[3];
-        const srcY = top - this.frameSize[0];
+        const srcX = left - this.frameSize[3] * this.scale;
+        const srcY = top - this.frameSize[0] * this.scale;
         const srcW = this.image.getBoundingClientRect().width * this.scale - srcX - right + this.frameSize[1] * this.scale;
         const srcH = this.image.getBoundingClientRect().height * this.scale - srcY - bottom + this.frameSize[2] * this.scale;
         const d = this.cut.cut({ width: srcW, height: srcH }, this.preview.getBoundingClientRect());
